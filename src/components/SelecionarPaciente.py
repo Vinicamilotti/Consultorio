@@ -2,15 +2,16 @@ import tkinter as tk
 from tkinter import ttk
 from customtkinter import *
 from .Heranca import Heranca
-from ..dbHandler import connection
+from ..controllers.pacientesController import PacientesController
 from ..components import SearchBar
 from ..classes.stateManager import State
+from ..forms.cadastro import Cadastro
 
 
 class SelecionarPaciente(Heranca):
     def __init__(self, master: any):
         super().__init__(master=master)
-
+        self.controller = PacientesController()
         self.columns = ("codigo", "nome")
         self.tree = ttk.Treeview(self, columns=self.columns, show="headings")
         self.tree.propagate(True)
@@ -25,10 +26,8 @@ class SelecionarPaciente(Heranca):
         self.tableState = State(self.cdsPacientes)
         self.showGrid()
 
-        self.search = SearchBar(self, 400)
+        self.search = SearchBar(self, 400, lambda: self.searchGrid())
         self.search.grid(column=0, row=0, sticky="nw")
-
-        self.search.btnBuscar.bind("<<MouseClick>>", command=self.searchGrid)
 
         scrollbar = CTkScrollbar(self, orientation="vertical", command=self.tree.yview)
         self.tree.configure(yscroll=scrollbar.set)
@@ -42,14 +41,12 @@ class SelecionarPaciente(Heranca):
         )
         btnCadastro.grid(row=0, column=0, sticky="nw")
         btnTeste = CTkButton(
-            buttonConteiner, text="Selecionar", command=self.openCadastro
+            buttonConteiner, text="Selecionar", command=self.selecionarPaciente
         )
         btnTeste.grid(row=0, column=1, sticky="n")
 
     def buscarDados(self) -> list:
-        cdsPacientes = self.cursor.execute(
-            "SELECT ID_PACIENTE, NOME_COMPLETO FROM PACIENTES"
-        ).fetchall()
+        cdsPacientes = self.controller.getAll()
         return cdsPacientes
 
     def showGrid(self):
@@ -60,17 +57,25 @@ class SelecionarPaciente(Heranca):
         for dados in state:
             self.tree.insert("", tk.END, values=dados)
 
-    def searchGrid(self, value: str):
-        print("helo")
-        query = value
+    def searchGrid(self):
+        self.tableState.resetState()
+        query = self.search.txtBox.get()
         state = self.tableState.getState()
         newState = []
         for itens in state:
             for fields in itens:
-                if str(query) in str(fields):
+                if str(query).lower() in str(fields).lower() and fields == itens[1]:
                     newState.append(itens)
         self.tableState.setState(newState)
         self.showGrid()
 
     def openCadastro(self):
-        print("hello")
+        cadastro = Cadastro(self)
+        cadastro.wait_window()
+        self.tableState.setState(self.buscarDados())
+        self.showGrid()
+
+    def selecionarPaciente(self):
+        current = self.tree.focus()
+        item = self.tree.item(current)
+        print(item)

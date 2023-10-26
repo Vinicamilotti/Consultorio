@@ -1,6 +1,6 @@
-import os
-from .createTables import createTables
-from .connect import connection
 from .tableList import tableList
+from .dbModule import DBModule
 
-createTables(connection(), tableList())
+db = DBModule()
+db.createTables(tableList())
+db.closeConnection()
