@@ -1,10 +1,12 @@
-import tkinter as tk
-from tkinter import ttk
-from dbHandler import connection
+from typing import Tuple
+from customtkinter import *
+from ..forms.topLevel import TopLevel
+from ..components.Cadastro import FormCadastro
+from pathlib import Path
 
 
-def Cadastro(master):
-    window = tk.Toplevel(master)
-    window.geometry("1024x768")
-    title = ttk.Label(window, text="TESTE")
-    title.grid(column=1, row=0)
+class Cadastro(TopLevel):
+    def __init__(self, *args, fg_color: str | Tuple[str, str] | None = None, **kwargs):
+        super().__init__(*args, fg_color=fg_color, **kwargs)
+        self.form = FormCadastro(self)
+        self.form.grid(row=1, column=1)
