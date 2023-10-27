@@ -2,6 +2,7 @@ from src import App
 import os
 from pathlib import Path
 from src.dbHandler.dbModule import DBModule
+from customtkinter import *
 
 appPath = os.path.join(os.getcwd())
 DataFolder = Path(os.path.join(appPath, "Data"))
@@ -29,8 +30,10 @@ def VerificarPastas():
 
 
 def __init__():
+
     createDataDirectory()
     VerificarPastas()
+
     app = App(appPath)
     app.mainloop()
 

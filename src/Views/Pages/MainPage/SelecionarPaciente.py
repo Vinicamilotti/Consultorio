@@ -16,19 +16,22 @@ class SelecionarPaciente(Heranca):
         self.controller = PacientesController()
         self.cdsPacientes = self.buscarDados()
         self.tree = GridView(self, columns=("codigo", "nome"), headings=("codigo", "nome"), data=self.cdsPacientes)
-        self.tree.grid(row=1,column=0,sticky="nsew")
-        buttonConteiner = CTkFrame(self)
-        buttonConteiner.grid(column=0, row=2, sticky="nw")
-        btnCadastro = CTkButton(
-            buttonConteiner,
+        self.tree.grid(row=1,column=0,sticky="nsew", padx=10, pady=10)
+        self.buttonConteiner = CTkFrame(self)
+        self.buttonConteiner.configure(fg_color="transparent")
+        self.buttonConteiner.grid(column=0, row=2, sticky="nw", padx=10, pady=10)
+        self.btnSelecionar = CTkButton(
+           self.buttonConteiner,
+           text="Selecionar",
+           command=self.selecionarPaciente
+        )
+        self.btnSelecionar.grid(row=0, column=0, sticky="nw")
+        self.btnCadastro = CTkButton(
+            self.buttonConteiner,
             text="Cadastro",
             command=self.openCadastro,
         )
-        btnCadastro.grid(row=0, column=0, sticky="nw")
-        btnTeste = CTkButton(
-            buttonConteiner, text="Selecionar", command=self.selecionarPaciente
-        )
-        btnTeste.grid(row=0, column=1, sticky="n")
+        self.btnCadastro.grid(row=0, column=1, sticky="nw", padx=5)
 
     def buscarDados(self) -> list:
         cdsPacientes = self.controller.getAll()

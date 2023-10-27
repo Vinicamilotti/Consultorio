@@ -21,4 +21,10 @@ class PacientesController(Controller):
         pasta = Path(os.path.join(self.path, gravar, 'Laudos'))
         pasta.mkdir(parents=True)
 
-
+    def getLaudos(self, caminho:Path):
+        files = os.listdir(caminho)
+        nomes = []
+        for file in files:
+            nome = file.split(".docx")
+            nomes.append(nome[0])
+        return nomes
