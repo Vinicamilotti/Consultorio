@@ -1,7 +1,7 @@
 from typing import Tuple
 from customtkinter import *
 from ..forms.topLevel import TopLevel
-from ..components.Cadastro import FormCadastro
+from ..Views.Pages.Cadastro import FormCadastro
 from pathlib import Path
 
 

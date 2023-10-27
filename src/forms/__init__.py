@@ -1,2 +1,2 @@
 from .appClass import App
-from ..components import *
+from ..Views import *

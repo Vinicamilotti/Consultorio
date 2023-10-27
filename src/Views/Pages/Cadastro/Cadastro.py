@@ -1,18 +1,18 @@
-from ..components.Heranca import Heranca
+from ....Views import Heranca
 from customtkinter import *
-from ..controllers.pacientesController import PacientesController
-
+from src.controllers.pacientesController import PacientesController
+from ....Views.Components.formInput import InputForm
 
 class FormCadastro(Heranca):
     def __init__(self, master: any):
         super().__init__(master)
-        self.nome = CTkEntry(self, width=300)
-        self.nome.grid(row=1, column=1)
+        self.nome = InputForm(self, "Nome do Paciente")
+        self.nome.grid(row=0, column=0)
         self.botaoCadastro = CTkButton(self, text="Cadastrar", command=self.cadastrar)
-        self.botaoCadastro.grid(row=1, column=2)
+        self.botaoCadastro.grid(row=2, column=0)
 
     def cadastrar(self):
-        nome = f"'{self.nome.get()}'"
+        nome = f"'{self.nome.getValue()}'"
         controller = PacientesController()
         controller.insertOne(["NOME_COMPLETO", "TPADULTO"], [nome, "1"])
         self.master.destroy()

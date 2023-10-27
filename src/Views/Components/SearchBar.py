@@ -1,4 +1,4 @@
-from .Heranca import Heranca
+from src.Views.Heranca import Heranca
 from customtkinter import *
 
 
