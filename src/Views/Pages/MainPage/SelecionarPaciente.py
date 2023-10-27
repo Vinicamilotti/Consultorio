@@ -7,31 +7,16 @@ from src.Views.Components.SearchBar import SearchBar
 from src.classes.stateManager import State
 from src.forms.cadastro import Cadastro
 from src.forms.paciente import Paciente
+from src.Views.Components.gridView import GridView
+from tkinter.messagebox import showerror
 
 class SelecionarPaciente(Heranca):
     def __init__(self, master: any):
         super().__init__(master=master)
         self.controller = PacientesController()
-        self.columns = ("codigo", "nome")
-        self.tree = ttk.Treeview(self, columns=self.columns, show="headings")
-        self.tree.propagate(True)
-        self.tree.heading("codigo", text="Codigo")
-        self.tree.heading("nome", text="Nome")
-        self.tree.grid(
-            row=1,
-            column=0,
-            sticky="nsew",
-        )
         self.cdsPacientes = self.buscarDados()
-        self.tableState = State(self.cdsPacientes)
-        self.showGrid()
-
-        self.search = SearchBar(self, 400, lambda: self.searchGrid())
-        self.search.grid(column=0, row=0, sticky="nw")
-
-        scrollbar = CTkScrollbar(self, orientation="vertical", command=self.tree.yview)
-        self.tree.configure(yscroll=scrollbar.set)
-        scrollbar.grid(row=1, column=2, sticky="ns")
+        self.tree = GridView(self, columns=("codigo", "nome"), headings=("codigo", "nome"), data=self.cdsPacientes)
+        self.tree.grid(row=1,column=0,sticky="nsew")
         buttonConteiner = CTkFrame(self)
         buttonConteiner.grid(column=0, row=2, sticky="nw")
         btnCadastro = CTkButton(
@@ -48,34 +33,15 @@ class SelecionarPaciente(Heranca):
     def buscarDados(self) -> list:
         cdsPacientes = self.controller.getAll()
         return cdsPacientes
-
-    def showGrid(self):
-        for i in self.tree.get_children():
-            self.tree.delete(i)
-
-        state = self.tableState.getState()
-        for dados in state:
-            self.tree.insert("", tk.END, values=dados)
-
-    def searchGrid(self):
-        self.tableState.resetState()
-        query = self.search.txtBox.get()
-        state = self.tableState.getState()
-        newState = []
-        for itens in state:
-            for fields in itens:
-                if str(query).lower() in str(fields).lower() and fields == itens[1]:
-                    newState.append(itens)
-        self.tableState.setState(newState)
-        self.showGrid()
-
     def openCadastro(self):
         cadastro = Cadastro(self)
         cadastro.wait_window()
-        self.tableState.setState(self.buscarDados())
-        self.showGrid()
+        self.tree.state.setState(self.buscarDados())
+        self.tree.showGrid()
 
     def selecionarPaciente(self):
-        current = self.tree.focus()
-        item = int(self.tree.item(current).get("values")[0])
-        janela = Paciente(self, paciente=item)
+        item = self.tree.getSelecionado()
+        if item != None:
+            janela = Paciente(self, paciente=item[0])
+        else:
+            showerror("Ops", "Selecione um paciente")
