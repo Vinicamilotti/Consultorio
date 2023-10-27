@@ -1,0 +1,1 @@
+from .Cadastro import FormCadastro

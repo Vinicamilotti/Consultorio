@@ -1,12 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
 from customtkinter import *
-from .Heranca import Heranca
-from ..controllers.pacientesController import PacientesController
-from ..components import SearchBar
-from ..classes.stateManager import State
-from ..forms.cadastro import Cadastro
-
+from src.Views.Heranca import Heranca
+from src.controllers.pacientesController import PacientesController
+from src.Views.Components.SearchBar import SearchBar
+from src.classes.stateManager import State
+from src.forms.cadastro import Cadastro
+from src.forms.paciente import Paciente
 
 class SelecionarPaciente(Heranca):
     def __init__(self, master: any):
@@ -77,5 +77,5 @@ class SelecionarPaciente(Heranca):
 
     def selecionarPaciente(self):
         current = self.tree.focus()
-        item = self.tree.item(current)
-        print(item)
+        item = int(self.tree.item(current).get("values")[0])
+        janela = Paciente(self, paciente=item)
