@@ -1,6 +1,7 @@
 from .controller import Controller
 import os
 from pathlib import Path
+from ..Models.Pacientes import Paciente
 
 
 class PacientesController(Controller):
@@ -8,17 +9,42 @@ class PacientesController(Controller):
         super().__init__(table="PACIENTES")
         self.path = Path(os.path.join(os.getcwd(), "Data", "Pacientes"))
 
-    def getAll(self) -> list:
-        return super().getAll()
+    def __montarPaciente(self, consulta: list) -> Paciente:
+        id = consulta[0]
+        id_responsavel = consulta[1]
+        nome = consulta[2]
+        contato = consulta[3]
+        cpf = consulta[4]
+        tipo = consulta[5]
+        pacienteObj = Paciente(id=id, id_responsavel=id_responsavel, nome=nome, contato=contato, cpf=cpf, tp=tipo)
+        return pacienteObj
 
-    def getById(self, id):
-        return super().select(["*"], f"WHERE ID_PACIENTE={id}")
+    def getAll(self) -> list[Paciente]:
+        consulta = super().getAll()
+        pacientes = []
+        for paciente in consulta:
+            pacienteObj = self.__montarPaciente(paciente)
+            pacientes.append(pacienteObj)
+        return pacientes
 
-    def insertOne(self, campos: list[str], valores: list[str]):
+    def getById(self, id: int) -> Paciente:
+        paciente = super().select(["*"], f"WHERE ID_PACIENTE={id}")
+        return self.__montarPaciente(paciente[0])
+
+    def novoPaciente(self, paciente: Paciente) -> None:
+        campos = ["ID_RESPONSAVEL", "NOME_COMPLETO", "CONTATO", "CPF", "TPADULTO"]
+        valores = [paciente.id_responsavel, f"'{paciente.nome}'", f"'{paciente.contato}'", f"'{paciente.cpf}'",
+                   paciente.tpadulto]
+
         super().insertOne(campos, valores)
-        nome = str(valores[0])
-        gravar = nome[1:len(nome) - 1]
-        pasta = Path(os.path.join(self.path, gravar, 'Laudos'))
+        pasta = Path(os.path.join(self.path, paciente.nome, 'Laudos'))
         pasta.mkdir(parents=True)
 
-
+    def getLaudos(self, paciente: Paciente):
+        caminho = Path(os.path.join(self.path, paciente.nome, "Laudos"))
+        files = os.listdir(caminho)
+        nomes = []
+        for file in files:
+            nome = file.split(".docx")
+            nomes.append(nome[0])
+        return nomes

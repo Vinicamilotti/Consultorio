@@ -11,10 +11,11 @@ class DBModule:
         self.cursor = self.db.cursor()
 
     def createTables(self, tables: list[str]):
-        qyr = ";".join(tables)
-        self.db.cursor().execute(qyr)
-        self.db.commit()
-        self.db.close()
+        for table in tables:
+            qry = table
+            self.db.cursor().execute(qry)
+            self.db.commit()
+
 
     def closeConnection(self):
         self.db.close()

@@ -1,1 +1,1 @@
-from .Pacientes import Pacientes
+from .Pacientes import Paciente

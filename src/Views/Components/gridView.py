@@ -10,6 +10,7 @@ from tkinter import messagebox
 class GridView(Heranca):
     def __init__(self, master: any, data: list, columns: list[str], headings: list[str]):
         super().__init__(master)
+        self.configure(fg_color="transparent")
         self.state = State(data)
         self.table = Treeview(self, columns=columns, show="headings")
         for head in headings:
@@ -17,7 +18,7 @@ class GridView(Heranca):
         self.table.grid(column=0, row=1, sticky="nsew")
         self.showGrid()
         self.search = SearchBar(self, 400, lambda: self.searchGrid())
-        self.search.grid(column=0, row=0, sticky="nw")
+        self.search.grid(column=0, row=0, sticky="nw", pady=10)
 
         self.scrollbar = CTkScrollbar(self, orientation="vertical", command=self.table.yview)
         self.table.configure(yscroll=self.scrollbar.set)

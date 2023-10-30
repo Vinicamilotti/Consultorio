@@ -11,3 +11,7 @@ class State:
 
     def resetState(self) -> None:
         self.setState(self.initialState)
+
+    def redefineState(self, newState):
+        self.initialState = newState
+        self.state = newState
