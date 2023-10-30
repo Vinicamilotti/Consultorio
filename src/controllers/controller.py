@@ -26,8 +26,14 @@ class Controller:
     def insertOne(self, campos: list[str], valores: list[str]):
         if len(campos) != len(valores):
             raise Exception("Numero de campos diferente do numero de valores")
+        valoresTratados = []
+        for valor in valores:
+            if valor == None:
+                valoresTratados.append("NULL"),
+            else:
+                valoresTratados.append(str(valor))
         try:
-            qry = f"INSERT INTO {self.table}({','.join(campos)}) VALUES ({','.join(valores)})"
+            qry = f"INSERT INTO {self.table}({','.join(campos)}) VALUES ({','.join(valoresTratados)})"
             self.cursor.execute(qry)
             self.db.commit()
         except self.db.Error as er:

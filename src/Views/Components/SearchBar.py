@@ -18,5 +18,5 @@ class SearchBar(Heranca):
         self.btnBuscar = CTkButton(self, text="Buscar", command=self.searchGrid)
         self.btnBuscar.grid(column=1, row=0, sticky="se", padx=5)
 
-    def searchGrid(self) -> list:
+    def searchGrid(self) -> None:
         self.searchFunc()
