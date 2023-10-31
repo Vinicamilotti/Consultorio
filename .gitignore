@@ -1,4 +1,8 @@
-__pycache__
+/__pycache__/
 */__pycache__/
 /Data/
 /Data/DB
+credentials.json
+token.json
+.env
+folder_id

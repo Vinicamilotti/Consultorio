@@ -9,6 +9,7 @@ def tableList() -> list[str]:
     strSql.append('     NOME_COMPLETO TEXT,                              ');
     strSql.append('     CONTATO TEXT,                                    ');
     strSql.append('     CPF TEXT                                         ');
+    strSql.append('     EMAIL TEXT                                       ');
     strSql.append(' )                                                    ');
 
     strSql.clear()
@@ -18,6 +19,7 @@ def tableList() -> list[str]:
     strSql.append('     NOME_COMPLETO TEXT,                                      ');
     strSql.append('     CONTATO TEXT,                                            ');
     strSql.append('     CPF VARCHAR(255),                                        ');
+    strSql.append('     EMAIL TEXT,                                              ');
     strSql.append('     TPADULTO INTEGER DEFAULT (0),                            ');
     strSql.append('     CONSTRAINT RESPONSAVEL_FK FOREIGN KEY (ID_RESPONSAVEL)   ');
     strSql.append('     REFERENCES RESPONSAVEL(ID_RESPONSAVEL)                   ');

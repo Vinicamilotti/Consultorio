@@ -15,8 +15,10 @@ class PacientesController(Controller):
         nome = consulta[2]
         contato = consulta[3]
         cpf = consulta[4]
-        tipo = consulta[5]
-        pacienteObj = Paciente(id=id, id_responsavel=id_responsavel, nome=nome, contato=contato, cpf=cpf, tp=tipo)
+        email = consulta[5]
+        tipo = consulta[6]
+
+        pacienteObj = Paciente(id=id, id_responsavel=id_responsavel, nome=nome, contato=contato,email=email, cpf=cpf, tp=tipo)
         return pacienteObj
 
     def getAll(self) -> list[Paciente]:
@@ -32,8 +34,8 @@ class PacientesController(Controller):
         return self.__montarPaciente(paciente[0])
 
     def novoPaciente(self, paciente: Paciente) -> None:
-        campos = ["ID_RESPONSAVEL", "NOME_COMPLETO", "CONTATO", "CPF", "TPADULTO"]
-        valores = [paciente.id_responsavel, f"'{paciente.nome}'", f"'{paciente.contato}'", f"'{paciente.cpf}'",
+        campos = ["ID_RESPONSAVEL", "NOME_COMPLETO", "CONTATO","EMAIL", "CPF", "TPADULTO"]
+        valores = [paciente.id_responsavel, f"'{paciente.nome}'", f"'{paciente.contato}'",f"'{paciente.email}'" ,f"'{paciente.cpf}'",
                    paciente.tpadulto]
 
         super().insertOne(campos, valores)
