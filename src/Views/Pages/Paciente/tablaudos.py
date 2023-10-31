@@ -10,7 +10,10 @@ from src.Views.Components.gridView import GridView
 from src.controllers.pacientesController import PacientesController
 from src.Views.Components.Lables.titles import *
 from src.Models.Pacientes import Paciente
-
+from utils.driveHandler import driveConnection
+from utils.whatsappHandler import Whatsapp
+from googleapiclient.http import MediaFileUpload
+from src.forms.topLevel import TopLevel
 
 class TabLaudos(Heranca):
     def __init__(self, master, paciente: Paciente):
@@ -23,7 +26,7 @@ class TabLaudos(Heranca):
         self.btimportar = CTkButton(self.topBtns, command=self.importarLaudo, text="Importar Laudo")
         self.btimportar.grid(row=0, column=1, sticky="ne")
 
-        self.btnexportar = CTkButton(self.topBtns, command=self.abrirLaudo, text="Compartilhar")
+        self.btnexportar = CTkButton(self.topBtns, command=self.compartilharLaudo, text="Compartilhar")
         self.btnexportar.grid(row=0, column=3, sticky="ne", padx=5)
 
         self.tree = GridView(self, columns=["laudo"], headings=["laudo"], data=self.getLaudos())
@@ -66,3 +69,24 @@ class TabLaudos(Heranca):
         shutil.copy(dialog, caminho)
         self.tree.state.redefineState(self.getLaudos())
         self.tree.showGrid()
+
+    def compartilharLaudo(self):
+        item = self.tree.getSelecionado()
+        arquivo = f"{item[0]}.docx"
+        abrir = Path(os.path.join(self.dados.caminho,"Laudos", arquivo))
+        folder_id = open('folder_id').read()
+        service = driveConnection()
+        file_metadata = {
+            'name': arquivo,
+            'parents':[folder_id],
+            'type':'anyone',
+            'role':'writer',
+        }
+        media = MediaFileUpload(abrir, mimetype='text/plain', resumable=True)
+        file = service.files().create(body=file_metadata, media_body=media).execute()
+        body = {'role':'writer', 'type':'anyone'}
+        service.permissions().create(fileId=file.get('id'),body=body, fields='files(id, name, parents, webViewLink)')
+        result = f"https://docs.google.com/file/d/{file.get('id')}/"
+        whatsapp = Whatsapp()
+        msg = f"Segue o laudo: {result}"
+        whatsapp.sendmessage(self.dados.contato, msg)
